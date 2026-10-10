@@ -153,10 +153,14 @@
     function frame() {
         const dt = 1 / FPS
 
-        // movement
-        if (keys.has("KeyW")) {
-            playerZ -= SPEED
-        }
+        clear()
+
+        ctx.font = "20px Arial";
+        ctx.fillStyle = "white";
+
+        // Render text
+        ctx.fillText("Controls: W,A,S,D", 10, 25);
+
         if (keys.has("KeyS")) {
             playerZ += SPEED
         }
@@ -167,27 +171,12 @@
             playerX += SPEED
         }
 
-        clear()
-        // points rendering for debugging
-        // for (const verticy of vertices) {
-        //     if (verticy.z >= 0) {
-        //         point(display(project(translate_z(verticy, distZ))))
-        //     }
-        // }
-
-        // for (const face of faces) {
-        //     for (let i = 0; i < face.length; i++) {
-        //         const a = vertices[face[i]];
-        //         const b = vertices[face[(i + 1) % face.length]];
-        //         if (a.z >= 0 && b.z >= 0) {
-        //             line(
-        //                 display(project(translate_z(a, distZ))),
-        //                 display(project(translate_z(b, distZ)))
-        //             )
-        //         }
-
-        //     }
-        // }
+        if (playerZ >= -0.4) {
+            // movement
+            if (keys.has("KeyW")) {
+                playerZ -= SPEED
+            }
+        }
 
         render_cube({ x: 0, y: 0, z: 0 }, playerX, playerZ)
         render_cube({ x: 0.5, y: 0, z: 0 }, playerX, playerZ)
