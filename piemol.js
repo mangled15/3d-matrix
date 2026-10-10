@@ -47,52 +47,17 @@
         }
     }
 
-    cubes = [
-        [
-            { x: -0.25, y: 0.25, z: 0.5 },
-            { x: 0.25, y: 0.25, z: 0.5 },
-            { x: 0.25, y: -0.25, z: 0.5 },
-            { x: -0.25, y: -0.25, z: 0.5 },
-
-            { x: -0.25, y: 0.25, z: 1 },
-            { x: 0.25, y: 0.25, z: 1 },
-            { x: 0.25, y: -0.25, z: 1 },
-            { x: -0.25, y: -0.25, z: 1 },
-        ]
-    ]
-
-    const vertices = [
-        { x: -0.25, y: 0.25, z: 0.5 },
-        { x: 0.25, y: 0.25, z: 0.5 },
-        { x: 0.25, y: -0.25, z: 0.5 },
-        { x: -0.25, y: -0.25, z: 0.5 },
-
-        { x: -0.25, y: 0.25, z: 1 },
-        { x: 0.25, y: 0.25, z: 1 },
-        { x: 0.25, y: -0.25, z: 1 },
-        { x: -0.25, y: -0.25, z: 1 },
-    ]
-
-    const faces = [
-        [0, 1, 2, 3],
-        [4, 5, 6, 7],
-        [0, 4],
-        [1, 5],
-        [2, 6],
-        [3, 7],
-    ]
-
-    function render_cube({ x, y, z }, playerX, playerZ) {
+    function render_cube({ x, y, z }, playerX, playerY, playerZ) {
         const cube_vertices = [
-            { x: -0.25 + x + playerX, y: 0.25 + y, z: 0.5 + z },
-            { x: 0.25 + x + playerX, y: 0.25 + y, z: 0.5 + z },
-            { x: 0.25 + x + playerX, y: -0.25 + y, z: 0.5 + z },
-            { x: -0.25 + x + playerX, y: -0.25 + y, z: 0.5 + z },
+            { x: -0.25 + x + playerX, y: 0.25 + y + playerY, z: 0.5 + z },
+            { x: 0.25 + x + playerX, y: 0.25 + y + playerY, z: 0.5 + z },
+            { x: 0.25 + x + playerX, y: -0.25 + y + playerY, z: 0.5 + z },
+            { x: -0.25 + x + playerX, y: -0.25 + y + playerY, z: 0.5 + z },
 
-            { x: -0.25 + x + playerX, y: 0.25 + y, z: 1 },
-            { x: 0.25 + x + playerX, y: 0.25 + y, z: 1 },
-            { x: 0.25 + x + playerX, y: -0.25 + y, z: 1 },
-            { x: -0.25 + x + playerX, y: -0.25 + y, z: 1 },
+            { x: -0.25 + x + playerX, y: 0.25 + y + playerY, z: 1 },
+            { x: 0.25 + x + playerX, y: 0.25 + y + playerY, z: 1 },
+            { x: 0.25 + x + playerX, y: -0.25 + y + playerY, z: 1 },
+            { x: -0.25 + x + playerX, y: -0.25 + y + playerY, z: 1 },
         ];
 
         const cube_faces = [
@@ -121,14 +86,15 @@
 
     }
 
-    let distZ = 0
     const SPEED = 0.01
 
     // CHATGPT!!!
     const keys = new Set();
 
+
+
     window.addEventListener("keydown", (e) => {
-        if (["KeyW", "KeyA", "KeyS", "KeyD", "Space", "ShiftLeft"]
+        if (["KeyW", "KeyA", "KeyS", "KeyD", "Space", "ShiftLeft", "ControlLeft"]
             .includes(e.code)) {
             e.preventDefault();
         }
@@ -146,8 +112,9 @@
     });
     // CHATGPT END!!!
 
-    playerZ = 0
-    playerX = 0
+    let playerX = 0
+    let playerY = 0
+    let playerZ = 0
 
     const FPS = 60
     function frame() {
@@ -160,6 +127,8 @@
 
         // Render text
         ctx.fillText("Controls: W,A,S,D", 10, 25);
+        ctx.fillText("Up: E/Space", 10, 55);
+        ctx.fillText("Down: Q/LeftShift", 10, 85);
 
         if (keys.has("KeyS")) {
             playerZ += SPEED
@@ -170,19 +139,25 @@
         if (keys.has("KeyA")) {
             playerX += SPEED
         }
-
         if (playerZ >= -0.4) {
             // movement
             if (keys.has("KeyW")) {
                 playerZ -= SPEED
             }
         }
+        // up and down
+        if (keys.has("KeyE") || keys.has("Space")) {
+            playerY -= SPEED
+        }
+        if (keys.has("KeyQ") || keys.has("ShiftLeft")) {
+            playerY += SPEED
+        }
 
-        render_cube({ x: 0, y: 0, z: 0 }, playerX, playerZ)
-        render_cube({ x: 0.5, y: 0, z: 0 }, playerX, playerZ)
-        render_cube({ x: -0.5, y: 0, z: 0 }, playerX, playerZ)
-        render_cube({ x: 0, y: 0.5, z: 0 }, playerX, playerZ)
-        render_cube({ x: 0, y: 1, z: 0 }, playerX, playerZ)
+        render_cube({ x: 0, y: 0, z: 0 }, playerX, playerY, playerZ)
+        render_cube({ x: 0.5, y: 0, z: 0 }, playerX, playerY, playerZ)
+        render_cube({ x: -0.5, y: 0, z: 0 }, playerX, playerY, playerZ)
+        render_cube({ x: 0, y: 0.5, z: 0 }, playerX, playerY, playerZ)
+        render_cube({ x: 0, y: 1, z: 0 }, playerX, playerY, playerZ)
 
         setTimeout(frame, 1000 / FPS)
     }
